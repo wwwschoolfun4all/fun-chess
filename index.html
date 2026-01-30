@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Chess - The Most Exciting Chess Game Ever</title>
+    <meta name="description" content="Experience chess like never before with power-ups, combos, and endless customization. Play locally, against AI, or challenge players worldwide!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1e1b4b;
+            --darker: #0f0d24;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #2d1f5e 100%);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* Floating chess pieces */
+        .floating-piece {
+            position: fixed;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(15, 13, 36, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            background: linear-gradient(135deg, var(--secondary), #f97316);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            opacity: 0.9;
+            max-width: 700px;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.7);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Section styling */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        /* Why Better Section */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.05));
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.2);
+        }
+
+        .comparison-card .boring {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .comparison-card .exciting {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comparison-card p {
+            margin-top: 1rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            line-height: 1.7;
+        }
+
+        /* Power-ups Section */
+        .powerups-section {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(16, 185, 129, 0.1));
+            border-radius: 40px;
+            padding: 4rem 2rem;
+            margin: 2rem;
+        }
+
+        .powerup-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .powerup-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .powerup-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .powerup-emoji {
+            font-size: 1.5rem;
+        }
+
+        /* Game Modes */
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .mode-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .mode-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        .mode-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-card p {
+            opacity: 0.8;
+        }
+
+        /* Customization showcase */
+        .customization-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .customization-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .custom-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .custom-item:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.1));
+        }
+
+        .custom-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .custom-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 40px;
+            margin: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 10s infinite;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .cta-section .btn-primary {
+            background: white;
+            color: var(--primary-dark);
+            font-size: 1.3rem;
+            padding: 1.2rem 3.5rem;
+            position: relative;
+        }
+
+        .cta-section .btn-primary:hover {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            opacity: 0.7;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .play-btn {
+                padding: 0.5rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .stats-bar {
+                gap: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 4rem 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .powerups-section {
+                margin: 1rem;
+                padding: 2rem 1rem;
+            }
+
+            .cta-section {
+                margin: 2rem 1rem;
+                padding: 4rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-animation"></div>
+
+    <!-- Floating chess pieces -->
+    <div class="floating-piece" style="top: 10%; left: 5%; animation-delay: 0s;">&#9814;</div>
+    <div class="floating-piece" style="top: 20%; right: 10%; animation-delay: 3s;">&#9816;</div>
+    <div class="floating-piece" style="top: 60%; left: 8%; animation-delay: 6s;">&#9815;</div>
+    <div class="floating-piece" style="top: 70%; right: 5%; animation-delay: 9s;">&#9813;</div>
+    <div class="floating-piece" style="top: 40%; left: 3%; animation-delay: 12s;">&#9817;</div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Fun Chess</div>
+        <a href="#" onclick="downloadAndPlayGame(event)" class="play-btn">Play Now</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">V7.6.1 - Now with 34+ Power-ups!</div>
+        <h1>Chess, But <span>Actually Fun</span></h1>
+        <p class="hero-subtitle">
+            Forget everything you know about boring chess. Power-ups, combos, explosive effects, and endless customization turn every match into an epic battle of wits and strategy.
+        </p>
+        <div class="hero-cta">
+            <a href="#" onclick="downloadAndPlayGame(event)" class="btn-primary">
+                Start Playing
+            </a>
+            <a href="#" onclick="downloadGameFile(event)" class="btn-secondary">Download Game</a>
+            <a href="#features" class="btn-secondary">See Features</a>
+        </div>
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number">34+</div>
+                <div class="stat-label">Power-ups</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">40+</div>
+                <div class="stat-label">Board Themes</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Piece Skins</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Game Modes</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why We're Better Section -->
+    <section id="why">
+        <h2 class="section-title">Why This Chess is Different</h2>
+        <p class="section-subtitle">Traditional chess is great. But what if it could be... more?</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card fade-in">
+                <div class="boring">Regular chess: You made a bad move. Game over.</div>
+                <div class="exciting">Undo Move Power-up</div>
+                <p>Made a mistake? Use your Undo power-up and rewind time. Learning chess has never been this forgiving.</p>
+            </div>
+            <div class="comparison-card fade-in" style="animation-delay: 0.1s;">
+                <div class="boring">Regular chess: Staring at the board for 10 minutes</div>
+                <div class="exciting">Hint System + Vision Power-up</div>
+                <p>Stuck? Get smart suggestions or activate Vision to see all possible moves highlighted on the board.</p>
+            </div>
+            <div class="comparison-card fade-in" style="animation-delay: 0.2s;">
+                <div class="boring">Regular chess: Same black and white squares forever</div>
+                <div class="exciting">40+ Stunning Board Themes</div>
+                <p>Play on Ocean Blue, Neon Nights, Candy Land, or Cherry Blossom boards. Express your style every game.</p>
+            </div>
+            <div class="comparison-card fade-in" style="animation-delay: 0.3s;">
+                <div class="boring">Regular chess: Opponent's queen is unstoppable</div>
+                <div class="exciting">Lightning Strike + Bomb Power-ups</div>
+                <p>Drop a bomb on that pesky queen or clear an entire row with Lightning Strike. Fight back with style!</p>
+            </div>
+            <div class="comparison-card fade-in" style="animation-delay: 0.4s;">
+                <div class="boring">Regular chess: Waiting for a friend who knows how to play</div>
+                <div class="exciting">Smart AI + Global Multiplayer</div>
+                <p>Play against AI at your skill level or instantly match with players worldwide. Always someone to play!</p>
+            </div>
+            <div class="comparison-card fade-in" style="animation-delay: 0.5s;">
+                <div class="boring">Regular chess: Same strategy every game</div>
+                <div class="exciting">Hidden Combo System</div>
+                <p>Discover secret power-up combinations! Shield + Bomb = Protected Explosion. 8+ unique combos to master.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <h2 class="section-title">Packed With Features</h2>
+        <p class="section-subtitle">Everything you need for the ultimate chess experience</p>
+
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">&#9876;</div>
+                <h3>Power-Up Arsenal</h3>
+                <p>34 unique power-ups change how you play. Freeze your opponent, teleport pieces, create shield walls, or unleash chaos with random effects. Chess strategy meets tactical action.</p>
+            </div>
+            <div class="feature-card fade-in" style="animation-delay: 0.1s;">
+                <div class="feature-icon">&#128170;</div>
+                <h3>Secret Combos</h3>
+                <p>Use two power-ups within 5 seconds to unlock devastating combos. Electro-Freeze, Chain Reaction, Fortress Mode - discover them all and dominate your opponents.</p>
+            </div>
+            <div class="feature-card fade-in" style="animation-delay: 0.2s;">
+                <div class="feature-icon">&#127912;</div>
+                <h3>Endless Customization</h3>
+                <p>30+ piece skins from Emoji Fun to Space Explorer. 40+ board themes. 30+ special effects. 18+ sound packs. Make the game truly yours.</p>
+            </div>
+            <div class="feature-card fade-in" style="animation-delay: 0.3s;">
+                <div class="feature-icon">&#127760;</div>
+                <h3>Play Anywhere</h3>
+                <p>Challenge players worldwide with real-time multiplayer. Create private rooms for friends. Or enjoy local games on the same device. Your choice.</p>
+            </div>
+            <div class="feature-card fade-in" style="animation-delay: 0.4s;">
+                <div class="feature-icon">&#129302;</div>
+                <h3>Smart AI Opponents</h3>
+                <p>Three difficulty levels powered by minimax algorithm. Easy mode for learning, Hard mode for a serious challenge. The AI adapts to provide the perfect match.</p>
+            </div>
+            <div class="feature-card fade-in" style="animation-delay: 0.5s;">
+                <div class="feature-icon">&#128176;</div>
+                <h3>Earn Rewards</h3>
+                <p>Every move earns coins. Captures earn more. Checkmates earn the most. Spend your coins in the shop to unlock new skins, themes, and power-ups.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Power-ups Showcase -->
+    <div class="powerups-section">
+        <h2 class="section-title">34+ Power-ups to Master</h2>
+        <p class="section-subtitle">Every power-up changes the game. Combine them for devastating effects.</p>
+
+        <div class="powerup-showcase">
+            <div class="powerup-item"><span class="powerup-emoji">&#128163;</span> Bomb</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#10052;</span> Freeze</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#128737;</span> Shield</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#9889;</span> Lightning</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#127776;</span> Vision</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#128300;</span> Teleport</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#129668;</span> Magnet</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#127922;</span> Chaos Roll</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#128640;</span> Speed Boost</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#9203;</span> Time Warp</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#129426;</span> Phoenix Rise</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#127850;</span> Clone</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#128162;</span> Mega Bomb</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#127786;</span> Tornado</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#10024;</span> Lucky Charm</div>
+            <div class="powerup-item"><span class="powerup-emoji">&#128176;</span> Coin Rain</div>
+        </div>
+        <p style="text-align: center; margin-top: 2rem; opacity: 0.7;">...and 18 more power-ups to discover!</p>
+    </div>
+
+    <!-- Game Modes -->
+    <section id="modes">
+        <h2 class="section-title">Three Ways to Play</h2>
+        <p class="section-subtitle">Whether you want solo practice, friendly competition, or global battles</p>
+
+        <div class="modes-grid">
+            <div class="mode-card fade-in">
+                <div class="mode-icon">&#128101;</div>
+                <h3>Local Game</h3>
+                <p>Two players, one device. Perfect for playing with friends and family sitting next to you.</p>
+            </div>
+            <div class="mode-card fade-in" style="animation-delay: 0.1s;">
+                <div class="mode-icon">&#129302;</div>
+                <h3>vs AI</h3>
+                <p>Challenge our intelligent AI. Easy, Medium, or Hard - pick your difficulty and improve your skills.</p>
+            </div>
+            <div class="mode-card fade-in" style="animation-delay: 0.2s;">
+                <div class="mode-icon">&#127760;</div>
+                <h3>Online Multiplayer</h3>
+                <p>Join the global lobby or create private rooms. Real-time matches with players worldwide.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customization Stats -->
+    <section>
+        <h2 class="section-title">Make It Yours</h2>
+        <p class="section-subtitle">100+ ways to customize your chess experience</p>
+
+        <div class="customization-grid">
+            <div class="custom-item fade-in">
+                <div class="custom-number">30+</div>
+                <div class="custom-label">Piece Skins</div>
+            </div>
+            <div class="custom-item fade-in" style="animation-delay: 0.1s;">
+                <div class="custom-number">40+</div>
+                <div class="custom-label">Board Themes</div>
+            </div>
+            <div class="custom-item fade-in" style="animation-delay: 0.2s;">
+                <div class="custom-number">30+</div>
+                <div class="custom-label">Special Effects</div>
+            </div>
+            <div class="custom-item fade-in" style="animation-delay: 0.3s;">
+                <div class="custom-number">18+</div>
+                <div class="custom-label">Sound Packs</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2>Ready to Play Chess Like Never Before?</h2>
+        <p>Download required. No account needed. Just click download and play.</p>
+        <a href="#" onclick="downloadAndPlayGame(event)" class="btn-primary">
+            Start Playing Now
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Fun Chess Multiplayer Edition V7.6.1</p>
+        <p>The most exciting way to play chess</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Download and play game function
+        async function downloadAndPlayGame(event) {
+            event.preventDefault();
+            
+            const gameUrl = 'game.html';
+            const fileName = 'fun-chess-v7.html';
+            
+            try {
+                // Check if file already exists in localStorage
+                const cachedGame = localStorage.getItem('funChessGame');
+                const cachedVersion = localStorage.getItem('funChessVersion');
+                const currentVersion = '7.6.1';
+                
+                if (cachedGame && cachedVersion === currentVersion) {
+                    // Load from cache
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(cachedGame);
+                    newWindow.document.close();
+                    return;
+                }
+                
+                // Download the game file
+                const response = await fetch(gameUrl);
+                const gameHtml = await response.text();
+                
+                // Cache the game
+                localStorage.setItem('funChessGame', gameHtml);
+                localStorage.setItem('funChessVersion', currentVersion);
+                
+                // Open in new window
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(gameHtml);
+                newWindow.document.close();
+                
+            } catch (error) {
+                console.error('Error loading game:', error);
+                // Fallback: open directly
+                window.open(gameUrl, '_blank');
+            }
+        }
+
+        // Download game file function
+        async function downloadGameFile(event) {
+            event.preventDefault();
+            
+            const gameUrl = 'game.html';
+            const fileName = 'fun-chess-v7.html';
+            
+            try {
+                // Download the game file
+                const response = await fetch(gameUrl);
+                const gameHtml = await response.text();
+                
+                // Create blob and download
+                const blob = new Blob([gameHtml], { type: 'text/html' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+            } catch (error) {
+                console.error('Error downloading game:', error);
+                // Fallback: direct download
+                window.open(gameUrl, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

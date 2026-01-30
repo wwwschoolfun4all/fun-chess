@@ -1,0 +1,9 @@
+# Docker ignore file
+node_modules
+.git
+.gitignore
+README.md
+DEPLOYMENT.md
+deploy.bat
+.DS_Store
+*.log
