@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fun Chess Multiplayer V7.6.1</title>
+  <title>Fun Chess Multiplayer V7.6.3</title>
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://accounts.google.com/gsi/client"></script>
   <!-- Firebase SDK -->
@@ -1248,15 +1248,32 @@
     </div>
   </div>
   
-  <div id="app-wrapper" class="h-full w-full overflow-auto home-screen" style="display: none;">
-   <main class="min-h-full flex flex-col items-center justify-center p-8">
+  <div id="app-wrapper" class="h-full w-full overflow-auto home-screen" style="display: none; position: relative; background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);">
+    <!-- Animated Chess Background -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none">
+      <!-- Chess Board Pattern -->
+      <div style="position: absolute; inset: 0; background-image: repeating-conic-gradient(#ffffff 0% 25%, transparent 0% 50%); background-size: 150px 150px; background-position: 0 0, 75px 75px; transform: rotate(45deg);"></div>
+    </div>
+    
+    <!-- Floating Chess Pieces -->
+    <div id="home-chess-particles" class="absolute inset-0 pointer-events-none">
+      <!-- Pieces will be dynamically added here -->
+    </div>
+    
+    <!-- Decorative Corner Pieces -->
+    <div class="absolute top-4 left-4 text-4xl opacity-10 animate-pulse">♔</div>
+    <div class="absolute top-4 right-4 text-4xl opacity-10 animate-pulse" style="animation-delay: 0.5s;">♕</div>
+    <div class="absolute bottom-4 left-4 text-4xl opacity-10 animate-pulse" style="animation-delay: 1s;">♖</div>
+    <div class="absolute bottom-4 right-4 text-4xl opacity-10 animate-pulse" style="animation-delay: 1.5s;">♘</div>
+    
+   <main class="min-h-full flex flex-col items-center justify-center p-8 relative z-10">
     <div class="w-full max-w-3xl">
      <div class="flex justify-between items-center mb-6">
-      <h1 id="game-title" class="text-center font-bold flex-1" style="color: #f1f5f9;">Fun Chess 🎉</h1>
+      <h1 id="game-title" class="text-center font-bold flex-1" style="color: #f1f5f9; font-size: 3rem; text-shadow: 0 0 20px rgba(139, 92, 246, 0.6); background: linear-gradient(45deg, #ffffff, #e0e7ff, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Fun Chess 🎉</h1>
       <div class="flex gap-2">
-       <button id="fullscreen-btn" class="px-4 py-2 rounded-lg font-semibold transition-colors text-sm" style="background: #10b981; color: #ffffff;"> 🖥️ Fullscreen</button>
-       <button id="help-btn" class="px-4 py-2 rounded-lg font-semibold transition-colors text-sm" style="background: #3b82f6; color: #ffffff;"> ❓ Help </button>
-       <button id="admin-btn" class="px-4 py-2 rounded-lg font-semibold transition-colors text-sm" style="background: #4b5563; color: #ffffff;"> 🔐 Admin </button>
+       <button id="fullscreen-btn" class="px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm hover:scale-105" style="background: #10b981; color: #ffffff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);"> 🖥️ Fullscreen</button>
+       <button id="help-btn" class="px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm hover:scale-105" style="background: #3b82f6; color: #ffffff; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);"> ❓ Help </button>
+       <button id="admin-btn" class="px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm hover:scale-105" style="background: #4b5563; color: #ffffff; box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);"> 🔐 Admin </button>
       </div>
      </div>
      <!-- Multiplayer status bar -->
@@ -1270,17 +1287,45 @@
       </div>
      </div>
      <!-- Mode selection (shown initially) -->
-     <div id="mode-selection" class="flex gap-4 justify-center mb-6">
-      <button id="local-mode-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-colors" style="background: #3b82f6; color: #ffffff;"> 🏠 Local Game </button>
-      <button id="ai-mode-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-colors" style="background: #10b981; color: #ffffff;"> 🤖 AI Game </button>
-      <button id="online-mode-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-colors" style="background: #9333ea; color: #ffffff;"> 🌐 Online Game </button>
+     <div id="mode-selection" class="flex gap-6 justify-center mb-8">
+      <button id="local-mode-btn" class="px-10 py-6 rounded-2xl font-bold text-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: #ffffff; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);">
+        <span class="relative z-10">🏠 Local Game</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-2 right-2 text-2xl opacity-30">♟️</div>
+      </button>
+      <button id="ai-mode-btn" class="px-10 py-6 rounded-2xl font-bold text-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);">
+        <span class="relative z-10">🤖 AI Game</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-green-600 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-2 right-2 text-2xl opacity-30">♔</div>
+      </button>
+      <button id="online-mode-btn" class="px-10 py-6 rounded-2xl font-bold text-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #9333ea, #7c3aed); color: #ffffff; box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);">
+        <span class="relative z-10">🌐 Online Game</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-2 right-2 text-2xl opacity-30">♕</div>
+      </button>
      </div>
      <!-- Online game options (hidden initially) -->
-     <div id="online-options" style="display: none;" class="flex gap-4 justify-center mb-6">
-      <button id="host-game-btn" class="px-6 py-3 rounded-lg font-semibold transition-colors" style="background: #10b981; color: #ffffff;"> 🎮 Host Game </button>
-      <button id="join-game-btn" class="px-6 py-3 rounded-lg font-semibold transition-colors" style="background: #3b82f6; color: #ffffff;"> 🔗 Join Game </button>
-      <button id="public-lobby-btn" class="px-6 py-3 rounded-lg font-semibold transition-colors" style="background: #f59e0b; color: #ffffff;"> 🌍 Public Lobby </button>
-      <button id="back-to-mode-btn" class="px-6 py-3 rounded-lg font-semibold transition-colors" style="background: #4b5563; color: #ffffff;"> ⬅️ Back </button>
+     <div id="online-options" style="display: none;" class="flex gap-4 justify-center mb-8 flex-wrap">
+      <button id="host-game-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);">
+        <span class="relative z-10">🎮 Host Game</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-green-600 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-1 right-1 text-lg opacity-30">♖</div>
+      </button>
+      <button id="join-game-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: #ffffff; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);">
+        <span class="relative z-10">🔗 Join Game</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-1 right-1 text-lg opacity-30">♘</div>
+      </button>
+      <button id="public-lobby-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);">
+        <span class="relative z-10">🌍 Public Lobby</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-1 right-1 text-lg opacity-30">♗</div>
+      </button>
+      <button id="back-to-mode-btn" class="px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl relative overflow-hidden group" style="background: linear-gradient(135deg, #4b5563, #374151); color: #ffffff; box-shadow: 0 6px 20px rgba(75, 85, 99, 0.4);">
+        <span class="relative z-10">⬅️ Back</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-gray-600 to-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute top-1 right-1 text-lg opacity-30">♙</div>
+      </button>
      </div>
      <!-- Game area (hidden until mode selected) -->
      <div id="game-area" style="display: none;">
@@ -1291,15 +1336,11 @@
       <!-- Power-ups section -->
       <div id="powerups-section" class="flex justify-center gap-2 mb-4 flex-wrap">
        <button id="undo-btn" class="powerup-btn"> ⏪ (<span id="undo-count">0</span>) </button>
-       <button id="hint-btn" class="powerup-btn"> 💡 (<span id="hint-count">0</span>) </button>
-       <button id="shield-btn" class="powerup-btn"> 🛡 (<span id="shield-count">0</span>) </button>
-       <button id="double-coins-btn" class="powerup-btn"> 💰 (<span id="double-coins-count">0</span>) </button>
-       <button id="freeze-btn" class="powerup-btn"> ❄ (<span id="freeze-count">0</span>) </button>
-       <button id="knight-boost-btn" class="powerup-btn"> 🐴 (<span id="knight-boost-count">0</span>) </button>
-       <button id="vision-btn" class="powerup-btn"> 👁 (<span id="vision-count">0</span>) </button>
        <button id="swap-btn" class="powerup-btn"> 🔄 (<span id="swap-count">0</span>) </button>
        <button id="bomb-btn" class="powerup-btn"> 💣 (<span id="bomb-count">0</span>) </button>
        <button id="time-warp-btn" class="powerup-btn"> ⏱ (<span id="time-warp-count">0</span>) </button>
+       <button id="hint-btn" class="powerup-btn"> 💡 (<span id="hint-count">0</span>) </button>
+       <button id="vision-btn" class="powerup-btn"> 👁️ (<span id="vision-count">0</span>) </button>
        
        <!-- NEW POWER-UP BUTTONS -->
        <button id="lightning-btn" class="powerup-btn"> ⚡ (<span id="lightning-count">0</span>) </button>
@@ -1816,11 +1857,11 @@
       <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);">
        <h3 style="font-size: 20px; font-weight: bold; color: #f1f5f9; margin-bottom: 16px;">🔄 Game Updates</h3>
        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-        <input type="text" id="update-version" value="V7.4.1" placeholder="New version (e.g., V7.4.1)" style="flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #475569; background: #334155; color: #f1f5f9; font-size: 16px;">
+        <input type="text" id="update-version" value="V7.6.4" placeholder="New version (e.g., V7.6.4)" style="flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #475569; background: #334155; color: #f1f5f9; font-size: 16px;">
         <button id="update-all-games-btn" style="padding: 10px 20px; border-radius: 8px; background: #8b5cf6; color: #ffffff; font-weight: bold; cursor: pointer; border: none;"> 🔄 Update All Games</button>
        </div>
        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-        <span style="flex: 1; padding: 10px; border-radius: 8px; background: #334155; color: #f1f5f9; font-size: 14px;">Current: <span id="current-version-display">V7.5.7</span></span>
+        <span style="flex: 1; padding: 10px; border-radius: 8px; background: #334155; color: #f1f5f9; font-size: 14px;">Current: <span id="current-version-display">V7.6.4</span></span>
         <button id="update-server-btn" style="padding: 10px 20px; border-radius: 8px; background: #10b981; color: #ffffff; font-weight: bold; cursor: pointer; border: none;"> 🚀 Update Server</button>
        </div>
        <div id="update-status" style="padding: 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; text-align: center;">Enter version number and click to update all connected games</div>
@@ -1917,8 +1958,8 @@
   
   <script>
     // Version Constants - Must be defined first
-    const GAME_VERSION = '7.6.1';
-    const CURRENT_VERSION = 'V7.6.1';
+    const GAME_VERSION = '7.6.4';
+    const CURRENT_VERSION = 'V7.6.4';
     
     // Code Protection System
     const ADMIN_KEY = 'Spots2019';
@@ -2041,8 +2082,8 @@
     });
     
     // Obfuscate version constants
-    const _v = () => atob('Vi43LjUuOA=='); // V7.6.1 in base64
-    const _gv = () => atob('Ny41Ljg=');   // 7.6.1 in base64
+    const _v = () => atob('Vi43LjYuMw=='); // V7.6.3 in base64
+    const _gv = () => atob('Ny42LjM=');   // 7.6.3 in base64
     
     // Sound Effects System - Unique sounds for each action
     const sounds = {
@@ -2116,9 +2157,15 @@
           if (latestVersion && latestVersion !== CURRENT_VERSION) {
             console.log('🔄 New version available on server:', latestVersion);
             showUpdateNotification(latestVersion);
+            // Update lastKnownVersion to prevent repeated notifications
+            lastKnownVersion = latestVersion;
+            localStorage.setItem('chessGameVersion', lastKnownVersion);
           } else if (lastKnownVersion !== CURRENT_VERSION) {
             console.log('🔄 Local version change detected:', CURRENT_VERSION);
             showUpdateNotification(CURRENT_VERSION);
+            // Update lastKnownVersion to current version
+            lastKnownVersion = CURRENT_VERSION;
+            localStorage.setItem('chessGameVersion', lastKnownVersion);
             
             // Update server with new version (only if newer than server)
             if (!latestVersion || isNewerVersion(CURRENT_VERSION.replace('V', ''), latestVersion.replace('V', ''))) {
@@ -2133,6 +2180,9 @@
           if (lastKnownVersion !== CURRENT_VERSION) {
             console.log('🔄 New version detected:', CURRENT_VERSION, 'Current:', lastKnownVersion);
             showUpdateNotification(CURRENT_VERSION);
+            // Update lastKnownVersion to current version
+            lastKnownVersion = CURRENT_VERSION;
+            localStorage.setItem('chessGameVersion', lastKnownVersion);
             
             // Try to update server with new version (only if newer than server)
             try {
@@ -2152,6 +2202,9 @@
         // Fallback to local checking
         if (lastKnownVersion !== CURRENT_VERSION) {
           showUpdateNotification(CURRENT_VERSION);
+          // Update lastKnownVersion to current version
+          lastKnownVersion = CURRENT_VERSION;
+          localStorage.setItem('chessGameVersion', lastKnownVersion);
         }
       }
     });
@@ -2170,9 +2223,15 @@
             if (isNewerVersion(latestVersion.replace('V', ''), CURRENT_VERSION.replace('V', ''))) {
               console.log('🔄 Server has newer version:', latestVersion);
               showUpdateNotification(latestVersion);
+              // Update lastKnownVersion to prevent repeated notifications
+              lastKnownVersion = latestVersion;
+              localStorage.setItem('chessGameVersion', lastKnownVersion);
             } else {
               console.log('🔄 Local version is newer:', CURRENT_VERSION);
               showUpdateNotification(CURRENT_VERSION);
+              // Update lastKnownVersion to current version
+              lastKnownVersion = CURRENT_VERSION;
+              localStorage.setItem('chessGameVersion', lastKnownVersion);
               
               // Update server with new version
               await versionRef.set(CURRENT_VERSION);
@@ -2181,6 +2240,9 @@
           } else if (lastKnownVersion !== CURRENT_VERSION) {
             console.log('🔄 Local version change detected:', CURRENT_VERSION);
             showUpdateNotification(CURRENT_VERSION);
+            // Update lastKnownVersion to current version
+            lastKnownVersion = CURRENT_VERSION;
+            localStorage.setItem('chessGameVersion', lastKnownVersion);
             
             // Update server with new version
             await versionRef.set(CURRENT_VERSION);
@@ -2191,6 +2253,9 @@
           if (lastKnownVersion !== CURRENT_VERSION) {
             console.log('🔄 New version detected:', CURRENT_VERSION, 'Current:', lastKnownVersion);
             showUpdateNotification(CURRENT_VERSION);
+            // Update lastKnownVersion to current version
+            lastKnownVersion = CURRENT_VERSION;
+            localStorage.setItem('chessGameVersion', lastKnownVersion);
           }
         }
       } catch (error) {
@@ -2198,6 +2263,9 @@
         // Fallback to local checking
         if (lastKnownVersion !== CURRENT_VERSION) {
           showUpdateNotification(CURRENT_VERSION);
+          // Update lastKnownVersion to current version
+          lastKnownVersion = CURRENT_VERSION;
+          localStorage.setItem('chessGameVersion', lastKnownVersion);
         }
       }
     }
@@ -2250,7 +2318,7 @@
           <div>
             <div style="font-weight: bold; margin-bottom: 4px;">${isUpgrade ? 'Game Update Available!' : 'Game Updated!'}</div>
             <div style="opacity: 0.9; margin-bottom: 8px;">${updateText} (You have ${CURRENT_VERSION})</div>
-            <button onclick="reloadGame()" style="
+            <button onclick="reloadGame('${newVersion}')" style="
               background: white;
               color: #059669;
               border: none;
@@ -2284,9 +2352,9 @@
       }, 10000);
     }
     
-    function reloadGame() {
-      console.log('🔄 Reloading game to version:', CURRENT_VERSION);
-      localStorage.setItem('chessGameVersion', CURRENT_VERSION);
+    function reloadGame(targetVersion = CURRENT_VERSION) {
+      console.log('🔄 Reloading game to version:', targetVersion);
+      localStorage.setItem('chessGameVersion', targetVersion);
       
       // Show loading screen
       const loadingScreen = document.createElement('div');
@@ -2309,7 +2377,7 @@
       loadingScreen.innerHTML = `
         <div style="font-size: 48px; margin-bottom: 20px;">♟️</div>
         <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">Updating Game...</div>
-        <div style="opacity: 0.7; margin-bottom: 30px;">Version ${CURRENT_VERSION}</div>
+        <div style="opacity: 0.7; margin-bottom: 30px;">Version ${targetVersion}</div>
         <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden;">
           <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); animation: loading 1s ease-in-out infinite;"></div>
         </div>
@@ -3562,8 +3630,8 @@
     ];
 
     const defaultPowerUps = {
-      undo: 0, hint: 0, shield: 0, double_coins: 0, freeze: 0,
-      knight_boost: 0, vision: 0, swap: 0, bomb: 0, time_warp: 0,
+      undo: 0, freeze: 0,
+      swap: 0, bomb: 0, time_warp: 0,
       lightning: 0, heal: 0, clone: 0, magnet: 0, poison: 0,
       shield_wall: 0, speed_boost: 0, invisibility: 0, earthquake: 0,
       blizzard: 0, laser: 0, mirror: 0, tornado: 0, gravity: 0,
@@ -3607,8 +3675,6 @@
       blackKnightBoostActive: false,
       whiteKnightBoostMovesLeft: 0,
       blackKnightBoostMovesLeft: 0,
-      whiteVisionActive: false,
-      blackVisionActive: false,
       freezeActive: false,
       swapMode: false,
       swapFirstPiece: null,
@@ -4344,15 +4410,11 @@
     
     const powerUpsData = {
       undo: { icon: '⏪', name: 'Undo Move', description: 'Take back your last move', cost: 30 },
-      hint: { icon: '💡', name: 'Hint', description: 'Show a valid move', cost: 25 },
-      shield: { icon: '🛡', name: 'Shield', description: 'Protect from next capture', cost: 40 },
-      double_coins: { icon: '💰', name: '2x Coins', description: 'Double coins for 5 moves', cost: 50 },
-      freeze: { icon: '❄', name: 'Freeze', description: 'Opponent skips next turn', cost: 60 },
-      knight_boost: { icon: '🐴', name: 'Knight Boost', description: 'Knights move 2x for 3 turns', cost: 55 },
-      vision: { icon: '👁', name: 'Vision', description: 'Show all valid moves 3 turns', cost: 45 },
       swap: { icon: '🔄', name: 'Piece Swap', description: 'Swap any two of your pieces', cost: 65 },
       bomb: { icon: '💣', name: 'Bomb', description: 'Remove any enemy piece', cost: 80 },
       time_warp: { icon: '⏱', name: 'Time Warp', description: 'Take 2 turns in a row', cost: 75 },
+      hint: { icon: '💡', name: 'Hint', description: 'Get a suggested move', cost: 25 },
+      vision: { icon: '👁️', name: 'Vision', description: 'See best moves for 3 turns', cost: 50 },
       
       // NEW POWER-UPS
       lightning: { icon: '⚡', name: 'Lightning Strike', description: 'Remove all pieces in a row/column', cost: 120 },
@@ -4479,20 +4541,6 @@
       silver: { name: '🥈 Silver Elegance', light: '#c0c0c0', dark: '#808080', cost: 75 },
       bronze: { name: '🥉 Bronze Age', light: '#cd7f32', dark: '#8b4513', cost: 60 },
       rainbow: { name: '🌈 Rainbow Pride', light: '#ff69b4', dark: '#4169e1', cost: 90 },
-      neon: { name: '💫 Neon Nights', light: '#ff1493', dark: '#00ffff', cost: 85 },
-      pastel: { name: '🌸 Pastel Dreams', light: '#ffdab9', dark: '#e6e6fa', cost: 45 },
-      dark: { name: '⚫ Dark Mode', light: '#2c2c2c', dark: '#1a1a1a', cost: 35 },
-      candy: { name: '🍭 Candy Land', light: '#ff69b4', dark: '#ff1493', cost: 50 },
-      space: { name: '🚀 Space Black', light: '#191970', dark: '#000080', cost: 70 },
-      fire: { name: '🔥 Fire & Ice', light: '#ff6347', dark: '#4169e1', cost: 65 },
-      nature: { name: '🌿 Earth Tones', light: '#deb887', dark: '#8b7355', cost: 40 },
-      ice: { name: '🧊 Arctic Chill', light: '#e0ffff', dark: '#00ced1', cost: 55 },
-      desert: { name: '🏜 Desert Sand', light: '#f4a460', dark: '#d2691e', cost: 45 },
-      jungle: { name: '🌴 Jungle Green', light: '#90ee90', dark: '#228b22', cost: 50 },
-      royal: { name: '👑 Royal Purple', light: '#9370db', dark: '#4b0082', cost: 75 },
-      vintage: { name: '📜 Vintage Sepia', light: '#f5deb3', dark: '#8b7d6b', cost: 55 },
-      cyber: { name: '🤖 Cyber Grid', light: '#00ff00', dark: '#000000', cost: 80 },
-      zen: { name: '🧘 Zen Garden', light: '#f0e68c', dark: '#bdb76b', cost: 45 },
       carnival: { name: '🎡 Carnival', light: '#ff69b4', dark: '#ff1493', cost: 60 },
       matrix: { name: '💻 Matrix Code', light: '#00ff00', dark: '#003300', cost: 85 },
       galaxy: { name: '🌌 Galaxy Swirl', light: '#4b0082', dark: '#000080', cost: 90 },
@@ -4755,7 +4803,36 @@
     }
     
     function getCurrentCoins() {
-      return gameState.currentPlayer === 'white' ? gameState.whiteCoins : gameState.blackCoins;
+      const coins = gameState.currentPlayer === 'white' ? gameState.whiteCoins : gameState.blackCoins;
+      // Ensure we always return a valid number
+      return Math.max(0, parseInt(coins) || 0);
+    }
+    
+    // Validate and fix coin values to prevent corruption
+    function validateAndFixCoins() {
+      let fixed = false;
+      
+      // Fix white coins
+      if (typeof gameState.whiteCoins !== 'number' || isNaN(gameState.whiteCoins) || gameState.whiteCoins < 0) {
+        console.warn(`⚠️ Invalid whiteCoins detected: ${gameState.whiteCoins}, fixing to 0`);
+        gameState.whiteCoins = 0;
+        fixed = true;
+      }
+      
+      // Fix black coins
+      if (typeof gameState.blackCoins !== 'number' || isNaN(gameState.blackCoins) || gameState.blackCoins < 0) {
+        console.warn(`⚠️ Invalid blackCoins detected: ${gameState.blackCoins}, fixing to 0`);
+        gameState.blackCoins = 0;
+        fixed = true;
+      }
+      
+      if (fixed) {
+        console.log('🔧 Coin values have been fixed');
+        document.getElementById('coin-count').textContent = getCurrentCoins();
+        savePlayerProgress();
+      }
+      
+      return !fixed; // Return true if no fixes were needed
     }
     
     function getCurrentPowerUps() {
@@ -4790,8 +4867,6 @@
         blackKnightBoostActive: gameState.blackKnightBoostActive,
         whiteKnightBoostMovesLeft: gameState.whiteKnightBoostMovesLeft,
         blackKnightBoostMovesLeft: gameState.blackKnightBoostMovesLeft,
-        whiteVisionActive: gameState.whiteVisionActive,
-        blackVisionActive: gameState.blackVisionActive,
         // Skin data for synchronization
         whiteCurrentSkin: gameState.whiteCurrentSkin,
         blackCurrentSkin: gameState.blackCurrentSkin,
@@ -4852,8 +4927,6 @@
       gameState.blackKnightBoostActive = savedState.blackKnightBoostActive || false;
       gameState.whiteKnightBoostMovesLeft = savedState.whiteKnightBoostMovesLeft || 0;
       gameState.blackKnightBoostMovesLeft = savedState.blackKnightBoostMovesLeft || 0;
-      gameState.whiteVisionActive = savedState.whiteVisionActive || false;
-      gameState.blackVisionActive = savedState.blackVisionActive || false;
       
       // Check for admin termination
       if (record.admin_terminated === true) {
@@ -4882,18 +4955,41 @@
         return; // Stop further processing
       }
       
-      // Sync skin data
-      if (savedState.whiteCurrentSkin) {
+      // Sync skin data (only if player has the skin unlocked)
+      if (savedState.whiteCurrentSkin && gameState.whiteUnlockedSkins.includes(savedState.whiteCurrentSkin)) {
         gameState.whiteCurrentSkin = savedState.whiteCurrentSkin;
+        console.log('Synced white skin:', savedState.whiteCurrentSkin);
+      } else if (savedState.whiteCurrentSkin && !gameState.whiteUnlockedSkins.includes(savedState.whiteCurrentSkin)) {
+        console.log('Host has white skin but player does not:', savedState.whiteCurrentSkin);
+        // Keep player's current skin instead
       }
-      if (savedState.blackCurrentSkin) {
+      
+      if (savedState.blackCurrentSkin && gameState.blackUnlockedSkins.includes(savedState.blackCurrentSkin)) {
         gameState.blackCurrentSkin = savedState.blackCurrentSkin;
+        console.log('Synced black skin:', savedState.blackCurrentSkin);
+      } else if (savedState.blackCurrentSkin && !gameState.blackUnlockedSkins.includes(savedState.blackCurrentSkin)) {
+        console.log('Host has black skin but player does not:', savedState.blackCurrentSkin);
+        // Keep player's current skin instead
       }
-      if (savedState.currentTheme) {
+      
+      if (savedState.currentTheme && gameState.unlockedThemes.includes(savedState.currentTheme)) {
         gameState.currentTheme = savedState.currentTheme;
+        console.log('Synced theme:', savedState.currentTheme);
+      } else if (savedState.currentTheme && !gameState.unlockedThemes.includes(savedState.currentTheme)) {
+        console.log('Host has theme but player does not:', savedState.currentTheme);
+        // Keep player's current theme instead
       }
+      
       if (savedState.currentEffect) {
-        gameState.currentEffect = savedState.currentEffect;
+        // Check if effect exists and is purchased
+        const effect = effects[savedState.currentEffect];
+        if (effect && effect.purchased) {
+          gameState.currentEffect = savedState.currentEffect;
+          console.log('Synced effect:', savedState.currentEffect);
+        } else if (effect && !effect.purchased) {
+          console.log('Host has effect but player does not:', savedState.currentEffect);
+          // Keep player's current effect instead
+        }
       }
       
       // Restore timer state
@@ -4928,7 +5024,7 @@
             gameState.whitePowerUps = JSON.parse(record.host_powerups);
           } catch (e) {
             console.error('Failed to parse host power-ups:', e);
-            gameState.whitePowerUps = { freeze: 0, shield: 0, invisibility: 0, doublecoins: 0, knightboost: 0, vision: 0 };
+            gameState.whitePowerUps = { freeze: 0, invisibility: 0, doublecoins: 0, knightboost: 0 };
           }
         }
       } else {
@@ -4939,7 +5035,7 @@
             gameState.blackPowerUps = JSON.parse(record.guest_powerups);
           } catch (e) {
             console.error('Failed to parse guest power-ups:', e);
-            gameState.blackPowerUps = { freeze: 0, shield: 0, invisibility: 0, doublecoins: 0, knightboost: 0, vision: 0 };
+            gameState.blackPowerUps = { freeze: 0, invisibility: 0, doublecoins: 0, knightboost: 0 };
           }
         }
       }
@@ -5018,8 +5114,6 @@
         case 'knightBoost':
           createKnightBoostAnimation(dummyTarget);
           break;
-        case 'vision':
-          createVisionAnimation(dummyTarget);
           break;
         case 'heal':
           createHealAnimation(dummyTarget);
@@ -5264,11 +5358,6 @@
       gameState.publicGamePowerUps = false;
       document.getElementById('create-powerups-off-btn').style.background = '#ef4444';
       document.getElementById('create-powerups-on-btn').style.background = 'rgba(16, 185, 129, 0.5)';
-    });
-    
-    document.getElementById('create-public-game-btn').addEventListener('click', () => {
-      playButtonSound();
-      createPublicGame();
     });
     
     document.getElementById('refresh-games-btn').addEventListener('click', () => {
@@ -6281,6 +6370,12 @@
     }
     
     function addCoins(amount, element) {
+      // Validate input
+      if (typeof amount !== 'number' || amount < 0) {
+        console.error('❌ Invalid coin amount:', amount);
+        return;
+      }
+      
       playCoinsSound();
       let finalAmount = amount;
       if (gameState.currentPlayer === 'white' && gameState.whiteDoubleCoinsActive) {
@@ -6289,14 +6384,17 @@
         finalAmount = amount * 2;
       }
       
+      console.log(`💰 Adding ${finalAmount} coins to ${gameState.currentPlayer} (base: ${amount})`);
+      
       if (gameState.currentPlayer === 'white') {
-        gameState.whiteCoins += finalAmount;
+        gameState.whiteCoins = Math.max(0, gameState.whiteCoins + finalAmount);
       } else {
-        gameState.blackCoins += finalAmount;
+        gameState.blackCoins = Math.max(0, gameState.blackCoins + finalAmount);
       }
       
       const coinDisplay = document.getElementById('coin-count');
-      coinDisplay.textContent = gameState.currentPlayer === 'white' ? gameState.whiteCoins : gameState.blackCoins;
+      const currentCoins = getCurrentCoins();
+      coinDisplay.textContent = currentCoins;
       coinDisplay.classList.add('coin-pulse');
       setTimeout(() => coinDisplay.classList.remove('coin-pulse'), 500);
       
@@ -6317,6 +6415,38 @@
       
       // Save progress locally
       savePlayerProgress();
+    }
+    
+    // Safe coin deduction function with validation
+    function deductCoins(amount, reason = 'unknown') {
+      // Validate input
+      if (typeof amount !== 'number' || amount < 0) {
+        console.error('❌ Invalid deduction amount:', amount);
+        return false;
+      }
+      
+      const currentCoins = getCurrentCoins();
+      console.log(`💸 Attempting to deduct ${amount} coins for ${reason}. Current: ${currentCoins}`);
+      
+      if (currentCoins < amount) {
+        console.warn(`⚠️ Insufficient coins for ${reason}. Need: ${amount}, Have: ${currentCoins}`);
+        return false;
+      }
+      
+      // Deduct coins safely
+      if (gameState.currentPlayer === 'white') {
+        gameState.whiteCoins = Math.max(0, gameState.whiteCoins - amount);
+      } else {
+        gameState.blackCoins = Math.max(0, gameState.blackCoins - amount);
+      }
+      
+      const newBalance = getCurrentCoins();
+      console.log(`✅ Successfully deducted ${amount} coins for ${reason}. New balance: ${newBalance}`);
+      
+      // Update UI
+      document.getElementById('coin-count').textContent = newBalance;
+      
+      return true;
     }
 
     function movePiece(fromRow, fromCol, toRow, toCol) {
@@ -7565,9 +7695,6 @@
         } else if (powerupId === 'knight_boost') {
           const boostActive = gameState.currentPlayer === 'white' ? gameState.whiteKnightBoostActive : gameState.blackKnightBoostActive;
           canUse = canUse && !boostActive;
-        } else if (powerupId === 'vision') {
-          const visionActive = gameState.currentPlayer === 'white' ? gameState.whiteVisionActive : gameState.blackVisionActive;
-          canUse = canUse && !visionActive;
         } else if (powerupId === 'swap') {
           canUse = canUse && !gameState.swapMode;
         } else if (powerupId === 'bomb') {
@@ -8082,23 +8209,43 @@
     }
     
     function playBuySound() {
-      // Purchase confirmation sound
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
-      oscillator.frequency.setValueAtTime(554.37, audioContext.currentTime + 0.05); // C#5
-      oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-      
-      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
+      try {
+        // Purchase confirmation sound
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Resume audio context if suspended (required by some browsers)
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
+        oscillator.frequency.setValueAtTime(554.37, audioContext.currentTime + 0.05); // C#5
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+        
+        console.log('✅ Buy sound played successfully');
+      } catch (error) {
+        console.warn('⚠️ Could not play buy sound:', error);
+        // Fallback to basic sound if Web Audio API fails
+        try {
+          const audio = new Audio('data:audio/wav;base64,UklGRiQCAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQACAADw/wAA8P8AAAD/AP8A');
+          audio.volume = 0.3;
+          audio.play().catch(e => console.log('Fallback sound also failed:', e));
+        } catch (fallbackError) {
+          console.log('All sound attempts failed:', fallbackError);
+        }
+      }
     }
     
     function playIntroSound() {
@@ -8827,12 +8974,10 @@
         
       } catch (error) {
         console.error('🔥 Error removing game from global lobby:', error);
-        // Fallback to localStorage
-        savePublicGamesToStorage();
         return { isOk: false, error: error.message };
       }
     }
-    
+
     function loadPublicGames() {
       console.log('🌍 Loading public games...');
       
@@ -9039,13 +9184,22 @@
         // Generate a unique room code (but don't show it to user)
         const roomCode = 'game_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         
-        // Check if power-ups are disabled (check the button state properly)
+        // Check if power-ups are disabled (use proper state tracking)
         const powerupsOffBtn = document.getElementById('create-powerups-off-btn');
         const powerupsOnBtn = document.getElementById('create-powerups-on-btn');
-        const disablePowerups = powerupsOffBtn && powerupsOffBtn.style.background === 'rgb(16, 185, 129)';
+        
+        // Initialize button states if not already done
+        if (!powerupsOffBtn.dataset.state) {
+          powerupsOffBtn.dataset.state = 'inactive';
+          powerupsOnBtn.dataset.state = 'active';
+          powerupsOnBtn.style.background = '#10b981';
+          powerupsOffBtn.style.background = '#ef4444';
+        }
+        
+        const disablePowerups = powerupsOffBtn.dataset.state === 'active';
         
         console.log('Power-ups disabled:', disablePowerups);
-        console.log('Power-ups off button style:', powerupsOffBtn ? powerupsOffBtn.style.background : 'not found');
+        console.log('Power-ups off button state:', powerupsOffBtn.dataset.state);
         
         const roomData = {
           room_code: roomCode,
@@ -9237,12 +9391,20 @@
         return;
       }
 
-      // Use Hint if AI is struggling
-      if (gameState.blackPowerUps.hint > 0 && Math.random() > 0.7) {
+      // Use Hint if AI needs help finding good moves
+      if (gameState.blackPowerUps.hint > 0 && Math.random() < 0.3) {
         console.log('AI decided to use Hint!');
         useHint();
-        // Continue with regular move after getting hint
+        return;
       }
+
+      // Use Vision for strategic advantage
+      if (gameState.blackPowerUps.vision > 0 && Math.random() < 0.4) {
+        console.log('AI decided to use Vision!');
+        useVision();
+        return;
+      }
+
       
       setTimeout(() => {
         console.log('AI thinking...');
@@ -9508,16 +9670,9 @@
         comboActivated = true;
       }
       
-      // Shield Wall + Royal Guard = Fortress
-      if ((comboTracker.lastPowerUp === 'Shield Wall 🏰' && powerUpName === 'Royal Guard ⚔️') ||
-          (comboTracker.lastPowerUp === 'Royal Guard ⚔️' && powerUpName === 'Shield Wall 🏰')) {
-        activateCombo('Fortress', '🏰⚔️', 'Impenetrable fortress defense for 3 turns!');
-        comboActivated = true;
-      }
-      
-      // Freeze + Time Warp = Time Freeze
-      if ((comboTracker.lastPowerUp === 'Freeze ❄️' && powerUpName === 'Time Warp ⏱️') ||
-          (comboTracker.lastPowerUp === 'Time Warp ⏱️' && powerUpName === 'Freeze ❄️')) {
+      // Time Warp + Freeze = Time Freeze
+      if ((comboTracker.lastPowerUp === 'Time Warp ⏱️' && powerUpName === 'Freeze ❄️') ||
+          (comboTracker.lastPowerUp === 'Freeze ❄️' && powerUpName === 'Time Warp ⏱️')) {
         activateCombo('Time Freeze', '⏰❄️', 'Freezes opponent for 2 extra turns!');
         comboActivated = true;
       }
@@ -9529,12 +9684,28 @@
         comboActivated = true;
       }
       
-      // Knight Boost + Vision = Ghost Knight
-      if ((comboTracker.lastPowerUp === 'Knight Boost 🐴' && powerUpName === 'Vision 👁️') ||
-          (comboTracker.lastPowerUp === 'Vision 👁️' && powerUpName === 'Knight Boost 🐴')) {
-        activateCombo('Ghost Knight', '👻🐴', 'Knights can move through pieces for 3 turns!');
+      // Hint + Vision = Oracle's Wisdom
+      if ((comboTracker.lastPowerUp === 'Hint 💡' && powerUpName === 'Vision 👁️') ||
+          (comboTracker.lastPowerUp === 'Vision 👁️' && powerUpName === 'Hint 💡')) {
+        activateCombo('Oracle\'s Wisdom', '💡👁️', 'See all best moves for 5 turns!');
         comboActivated = true;
       }
+      
+      // Vision + Lightning = Divine Strike
+      if ((comboTracker.lastPowerUp === 'Vision 👁️' && powerUpName === 'Lightning Strike ⚡') ||
+          (comboTracker.lastPowerUp === 'Lightning Strike ⚡' && powerUpName === 'Vision 👁️')) {
+        activateCombo('Divine Strike', '👁️⚡', 'Lightning strikes the best enemy pieces!');
+        comboActivated = true;
+      }
+      
+      // Hint + Shield = Tactical Defense
+      if ((comboTracker.lastPowerUp === 'Hint 💡' && powerUpName === 'Shield 🛡️') ||
+          (comboTracker.lastPowerUp === 'Shield 🛡️' && powerUpName === 'Hint 💡')) {
+        activateCombo('Tactical Defense', '💡🛡️', 'Get hints while protected for 2 turns!');
+        comboActivated = true;
+      }
+      
+      // Knight Boost + Vision = Ghost Knight (REMOVED)
       
       // Double Coins + Swap = Coin Swap
       if ((comboTracker.lastPowerUp === 'Double Coins 💰' && powerUpName === 'Swap 🔄') ||
@@ -9555,6 +9726,7 @@
         comboTracker.comboCount++;
       }
     }
+    
     
     function activateCombo(comboName, comboIcon, comboDescription) {
       comboTracker.activeCombo = {
@@ -10471,6 +10643,78 @@
       }
     }
     
+    function useHint() {
+      const currentPowerUps = gameState.currentPlayer === 'white' ? gameState.whitePowerUps : gameState.blackPowerUps;
+      if (currentPowerUps.hint > 0 && !gameState.gameOver) {
+        playPowerUpSound();
+        if (gameState.currentPlayer === 'white') {
+          gameState.whitePowerUps.hint--;
+        } else {
+          gameState.blackPowerUps.hint--;
+        }
+        
+        // Get AI suggested move
+        const suggestedMove = getBestMove(gameState.board, gameState.currentPlayer);
+        if (suggestedMove) {
+          // Highlight the suggested move
+          const fromSquare = document.querySelector(`[data-row="${suggestedMove.from.row}"][data-col="${suggestedMove.from.col}"]`);
+          const toSquare = document.querySelector(`[data-row="${suggestedMove.to.row}"][data-col="${suggestedMove.to.col}"]`);
+          
+          if (fromSquare && toSquare) {
+            fromSquare.style.boxShadow = '0 0 20px #ffff00';
+            toSquare.style.boxShadow = '0 0 20px #ffff00';
+            
+            setTimeout(() => {
+              fromSquare.style.boxShadow = '';
+              toSquare.style.boxShadow = '';
+            }, 3000);
+          }
+          
+          animateNotification(`Hint: Move ${suggestedMove.piece} from ${String.fromCharCode(97 + suggestedMove.from.col)}${8 - suggestedMove.from.row} to ${String.fromCharCode(97 + suggestedMove.to.col)}${8 - suggestedMove.to.row}`, 'info');
+        }
+        
+        updatePowerUpButtons();
+        savePlayerProgress();
+        
+        if (gameState.mode === 'online') {
+          updateGameStateOnServer();
+        }
+      }
+    }
+    
+    function useVision() {
+      const currentPowerUps = gameState.currentPlayer === 'white' ? gameState.whitePowerUps : gameState.blackPowerUps;
+      if (currentPowerUps.vision > 0 && !gameState.gameOver) {
+        playPowerUpSound();
+        if (gameState.currentPlayer === 'white') {
+          gameState.whitePowerUps.vision--;
+        } else {
+          gameState.blackPowerUps.vision--;
+        }
+        
+        // Activate vision mode for 3 turns
+        gameState.visionMode = 3;
+        
+        // Show best moves for current position
+        const bestMoves = getBestMoves(gameState.board, gameState.currentPlayer, 3);
+        if (bestMoves.length > 0) {
+          let moveText = "Best moves:\n";
+          bestMoves.forEach((move, index) => {
+            moveText += `${index + 1}. ${move.piece} ${String.fromCharCode(97 + move.from.col)}${8 - move.from.row} → ${String.fromCharCode(97 + move.to.col)}${8 - move.to.row}\n`;
+          });
+          animateNotification("Vision activated! Check console for details.", 'success');
+          console.log("👁️ Vision Mode - Best Moves:", moveText);
+        }
+        
+        updatePowerUpButtons();
+        savePlayerProgress();
+        
+        if (gameState.mode === 'online') {
+          updateGameStateOnServer();
+        }
+      }
+    }
+    
     function useGravity() {
       const currentPowerUps = gameState.currentPlayer === 'white' ? gameState.whitePowerUps : gameState.blackPowerUps;
       if (currentPowerUps.gravity > 0 && !gameState.gameOver) {
@@ -11255,33 +11499,6 @@
       }
     }
     
-    function useVision() {
-      const currentPowerUps = gameState.currentPlayer === 'white' ? gameState.whitePowerUps : gameState.blackPowerUps;
-      const visionActive = gameState.currentPlayer === 'white' ? gameState.whiteVisionActive : gameState.blackVisionActive;
-      if (currentPowerUps.vision > 0 && !visionActive && !gameState.gameOver) {
-        if (gameState.currentPlayer === 'white') {
-          gameState.whiteVisionActive = true;
-          gameState.whitePowerUps.vision--;
-        } else {
-          gameState.blackVisionActive = true;
-          gameState.blackPowerUps.vision--;
-        }
-        updatePowerUpButtons();
-        
-        // Check for combos
-        checkCombo("Vision 👁️");
-        
-        // Send notification to other player
-        sendPowerUpNotification("Vision 👁️");
-        
-        // Save progress locally
-        savePlayerProgress();
-        
-        if (gameState.mode === 'online') {
-          updateGameStateOnServer();
-        }
-      }
-    }
     
     function useSwap() {
       const currentPowerUps = gameState.currentPlayer === 'white' ? gameState.whitePowerUps : gameState.blackPowerUps;
@@ -11449,8 +11666,6 @@
         blackKnightBoostActive: false,
         whiteKnightBoostMovesLeft: 0,
         blackKnightBoostMovesLeft: 0,
-        whiteVisionActive: false,
-        blackVisionActive: false,
         swapMode: false,
         swapFirstPiece: null,
         bombMode: false,
@@ -11778,6 +11993,9 @@
         renderShopItems();
         updatePowerUpButtons();
         
+        // Save progress locally
+        savePlayerProgress();
+        
         if (gameState.mode === 'online') {
           updateGameStateOnServer();
         }
@@ -11822,52 +12040,81 @@
     function buyTheme(themeId) {
       playBuySound();
       const theme = boardThemes[themeId];
-      const currentCoins = getCurrentCoins();
       
-      if (currentCoins >= theme.cost) {
-        if (!gameState.unlockedThemes.includes(themeId)) {
-          if (gameState.currentPlayer === 'white') {
-            gameState.whiteCoins -= theme.cost;
-          } else {
-            gameState.blackCoins -= theme.cost;
-          }
-          gameState.unlockedThemes.push(themeId);
-        }
+      if (!theme) {
+        console.error('❌ Theme not found:', themeId);
+        playErrorSound();
+        alert('Theme not found!');
+        return;
+      }
+      
+      if (gameState.unlockedThemes.includes(themeId)) {
+        playErrorSound();
+        alert('Theme already purchased!');
+        return;
+      }
+      
+      console.log(`🛒 Attempting to buy theme ${themeId} for ${theme.cost} coins`);
+      
+      // Use safe deduction
+      if (deductCoins(theme.cost, `theme purchase: ${themeId}`)) {
+        gameState.unlockedThemes.push(themeId);
+        
+        console.log(`✅ Successfully purchased theme ${themeId}`);
+        
+        document.getElementById('coin-count').textContent = getCurrentCoins();
         document.getElementById('shop-coin-count').textContent = getCurrentCoins();
         renderShopItems();
+        
+        // Save progress
+        savePlayerProgress();
         
         if (gameState.mode === 'online') {
           updateGameStateOnServer();
         }
       } else {
         playErrorSound();
-        safeAlert('Not enough coins!');
+        alert(`Not enough coins! Need ${theme.cost} 🪙, you have ${getCurrentCoins()} 🪙`);
       }
     }
     
     function buyEffect(effectId) {
-      playBuySound();
       const effect = effects[effectId];
-      const currentCoins = getCurrentCoins();
       
-      if (currentCoins >= effect.cost) {
-        if (!effect.purchased) {
-          if (gameState.currentPlayer === 'white') {
-            gameState.whiteCoins -= effect.cost;
-          } else {
-            gameState.blackCoins -= effect.cost;
-          }
-          effect.purchased = true;
-        }
+      if (!effect) {
+        console.error('❌ Effect not found:', effectId);
+        playErrorSound();
+        alert('Effect not found!');
+        return;
+      }
+      
+      if (effect.purchased) {
+        playErrorSound();
+        alert('Effect already purchased!');
+        return;
+      }
+      
+      console.log(`🛒 Attempting to buy effect ${effectId} for ${effect.cost} coins`);
+      
+      // Use safe deduction
+      if (deductCoins(effect.cost, `effect purchase: ${effectId}`)) {
+        effect.purchased = true;
+        
+        console.log(`✅ Successfully purchased effect ${effectId}`);
+        
+        document.getElementById('coin-count').textContent = getCurrentCoins();
         document.getElementById('shop-coin-count').textContent = getCurrentCoins();
         renderShopItems();
+        
+        // Save progress
+        savePlayerProgress();
         
         if (gameState.mode === 'online') {
           updateGameStateOnServer();
         }
       } else {
         playErrorSound();
-        safeAlert('Not enough coins!');
+        alert(`Not enough coins! Need ${effect.cost} 🪙, you have ${getCurrentCoins()} 🪙`);
       }
     }
     
@@ -11920,56 +12167,41 @@
       }
     }
     
-    function buyEffect(effectId) {
-      const effect = effects[effectId];
-      const currentCoins = getCurrentCoins();
-      
-      if (currentCoins >= effect.cost && !effect.purchased) {
-        if (gameState.currentPlayer === 'white') {
-          gameState.whiteCoins -= effect.cost;
-        } else {
-          gameState.blackCoins -= effect.cost;
-        }
-        effect.purchased = true;
-        
-        document.getElementById('coin-count').textContent = getCurrentCoins();
-        document.getElementById('shop-coin-count').textContent = getCurrentCoins();
-        renderShopItems();
-        
-        if (gameState.mode === 'online') {
-          updateGameStateOnServer();
-        }
-      } else {
-        playErrorSound();
-        alert('Not enough coins or already purchased!');
-      }
-    }
-    
     function buyPowerUp(powerupId) {
       playBuySound();
       const powerUp = powerUpsData[powerupId];
-      const currentCoins = getCurrentCoins();
       
-      if (currentCoins >= powerUp.cost) {
+      if (!powerUp) {
+        console.error('❌ Power-up not found:', powerupId);
+        playErrorSound();
+        alert('Power-up not found!');
+        return;
+      }
+      
+      console.log(`🛒 Attempting to buy power-up ${powerupId} for ${powerUp.cost} coins`);
+      
+      // Use safe deduction
+      if (deductCoins(powerUp.cost, `power-up purchase: ${powerupId}`)) {
+        // Add power-up to inventory
         if (gameState.currentPlayer === 'white') {
-          gameState.whiteCoins -= powerUp.cost;
           if (!gameState.whitePowerUps[powerupId]) {
             gameState.whitePowerUps[powerupId] = 0;
           }
           gameState.whitePowerUps[powerupId]++;
         } else {
-          gameState.blackCoins -= powerUp.cost;
           if (!gameState.blackPowerUps[powerupId]) {
             gameState.blackPowerUps[powerupId] = 0;
           }
           gameState.blackPowerUps[powerupId]++;
         }
+        
+        console.log(`✅ Successfully purchased power-up ${powerupId}`);
+        
         document.getElementById('coin-count').textContent = getCurrentCoins();
         document.getElementById('shop-coin-count').textContent = getCurrentCoins();
         renderShopItems();
-        updatePowerUpButtons();
         
-        // Save progress locally
+        // Save progress
         savePlayerProgress();
         
         if (gameState.mode === 'online') {
@@ -11977,28 +12209,39 @@
         }
       } else {
         playErrorSound();
-        alert('Not enough coins!');
+        alert(`Not enough coins! Need ${powerUp.cost} 🪙, you have ${getCurrentCoins()} 🪙`);
       }
     }
     
-    window.buySoundPack = function(soundPackId) {
-      playBuySound();
+    function buySoundPack(soundPackId) {
       const soundPack = soundPacks[soundPackId];
-      const currentCoins = getCurrentCoins();
       
-      if (currentCoins >= soundPack.cost) {
-        if (!gameState.unlockedSoundPacks.includes(soundPackId)) {
-          if (gameState.currentPlayer === 'white') {
-            gameState.whiteCoins -= soundPack.cost;
-          } else {
-            gameState.blackCoins -= soundPack.cost;
-          }
-          gameState.unlockedSoundPacks.push(soundPackId);
-        }
+      if (!soundPack) {
+        console.error('❌ Sound pack not found:', soundPackId);
+        playErrorSound();
+        alert('Sound pack not found!');
+        return;
+      }
+      
+      if (gameState.unlockedSoundPacks.includes(soundPackId)) {
+        playErrorSound();
+        alert('Sound pack already purchased!');
+        return;
+      }
+      
+      console.log(`🛒 Attempting to buy sound pack ${soundPackId} for ${soundPack.cost} coins`);
+      
+      // Use safe deduction
+      if (deductCoins(soundPack.cost, `sound pack purchase: ${soundPackId}`)) {
+        gameState.unlockedSoundPacks.push(soundPackId);
+        
+        console.log(`✅ Successfully purchased sound pack ${soundPackId}`);
+        
+        document.getElementById('coin-count').textContent = getCurrentCoins();
         document.getElementById('shop-coin-count').textContent = getCurrentCoins();
         renderShopItems();
         
-        // Save progress locally
+        // Save progress
         savePlayerProgress();
         
         if (gameState.mode === 'online') {
@@ -12006,7 +12249,7 @@
         }
       } else {
         playErrorSound();
-        safeAlert('Not enough coins!');
+        alert(`Not enough coins! Need ${soundPack.cost} 🪙, you have ${getCurrentCoins()} 🪙`);
       }
     }
     
@@ -12717,8 +12960,8 @@
         
         // Load power-ups with all 29 power-ups
         const defaultPowerUps = {
-          undo: 0, hint: 0, shield: 0, double_coins: 0, freeze: 0,
-          knight_boost: 0, vision: 0, swap: 0, bomb: 0, time_warp: 0,
+          undo: 0, freeze: 0,
+          swap: 0, bomb: 0, time_warp: 0,
           lightning: 0, heal: 0, clone: 0, magnet: 0, poison: 0,
           shield_wall: 0, speed_boost: 0, invisibility: 0, earthquake: 0,
           blizzard: 0, laser: 0, mirror: 0, tornado: 0, gravity: 0,
@@ -12804,8 +13047,8 @@
           
           // Reset power-ups to defaults
           const defaultPowerUps = {
-            undo: 0, hint: 0, shield: 0, double_coins: 0, freeze: 0,
-            knight_boost: 0, vision: 0, swap: 0, bomb: 0, time_warp: 0,
+            undo: 0, freeze: 0,
+            swap: 0, bomb: 0, time_warp: 0,
             lightning: 0, heal: 0, clone: 0, magnet: 0, poison: 0,
             shield_wall: 0, speed_boost: 0, invisibility: 0, earthquake: 0,
             blizzard: 0, laser: 0, mirror: 0, tornado: 0, gravity: 0,
@@ -13691,15 +13934,11 @@
       closeShop();
     });
     document.getElementById('undo-btn').addEventListener('click', useUndo);
-    document.getElementById('hint-btn').addEventListener('click', useHint);
-    document.getElementById('shield-btn').addEventListener('click', useShield);
-    document.getElementById('double-coins-btn').addEventListener('click', useDoubleCoins);
-    document.getElementById('freeze-btn').addEventListener('click', useFreeze);
-    document.getElementById('knight-boost-btn').addEventListener('click', useKnightBoost);
-    document.getElementById('vision-btn').addEventListener('click', useVision);
     document.getElementById('swap-btn').addEventListener('click', useSwap);
     document.getElementById('bomb-btn').addEventListener('click', useBomb);
     document.getElementById('time-warp-btn').addEventListener('click', useTimeWarp);
+    document.getElementById('hint-btn').addEventListener('click', useHint);
+    document.getElementById('vision-btn').addEventListener('click', useVision);
     
     // NEW POWER-UP EVENT LISTENERS
     document.getElementById('lightning-btn').addEventListener('click', useLightning);
@@ -14363,24 +14602,6 @@
         100% {
           transform: scale(1) opacity: 1;
           filter: brightness(1);
-        }
-      }
-      
-      @keyframes visionPulse {
-        0% {
-          transform: scale(0);
-          opacity: 0;
-          box-shadow: 0 0 0 0 rgba(255, 255, 0, 0.7);
-        }
-        50% {
-          transform: scale(2);
-          opacity: 0.5;
-          box-shadow: 0 0 30px 15px rgba(255, 255, 0, 0);
-        }
-        100% {
-          transform: scale(3);
-          opacity: 0;
-          box-shadow: 0 0 50px 25px rgba(255, 255, 0, 0);
         }
       }
       
@@ -15981,6 +16202,7 @@
         time_warp: () => createTimeWarpAnimation(targetElement),
         swap: () => createSwapAnimation(targetElement),
         teleport: () => createTeleportAnimation(targetElement),
+        hint: () => createHintAnimation(targetElement),
         vision: () => createVisionAnimation(targetElement),
         earthquake: () => createEarthquakeAnimation(targetElement),
         blizzard: () => createBlizzardAnimation(targetElement),
@@ -16411,6 +16633,58 @@
       `;
       document.body.appendChild(magnet);
       setTimeout(() => magnet.remove(), 1500);
+    }
+    
+    function createHintAnimation(targetElement) {
+      const hint = document.createElement('div');
+      hint.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle, #ffff00, #ff9900);
+        border-radius: 50%;
+        animation: hintPulse 2s ease-out;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+      `;
+      hint.innerHTML = '💡';
+      hint.style.fontSize = '40px';
+      hint.style.display = 'flex';
+      hint.style.alignItems = 'center';
+      hint.style.justifyContent = 'center';
+      
+      document.body.appendChild(hint);
+      setTimeout(() => hint.remove(), 2000);
+    }
+    
+    function createVisionAnimation(targetElement) {
+      const vision = document.createElement('div');
+      vision.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, #00ff00, #008800);
+        border-radius: 50%;
+        animation: visionPulse 2s ease-out;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: 0 0 40px rgba(0, 255, 0, 0.8);
+      `;
+      vision.innerHTML = '👁️';
+      vision.style.fontSize = '60px';
+      vision.style.display = 'flex';
+      vision.style.alignItems = 'center';
+      vision.style.justifyContent = 'center';
+      
+      document.body.appendChild(vision);
+      setTimeout(() => vision.remove(), 2000);
     }
     
     function createPoisonAnimation(targetElement) {
@@ -17559,8 +17833,8 @@
     function migratePowerUpData() {
       // Ensure all power-ups exist in the data structure
       const defaultPowerUps = {
-        undo: 0, hint: 0, shield: 0, double_coins: 0, freeze: 0,
-        knight_boost: 0, vision: 0, swap: 0, bomb: 0, time_warp: 0,
+        undo: 0, freeze: 0,
+        swap: 0, bomb: 0, time_warp: 0,
         lightning: 0, heal: 0, clone: 0, magnet: 0, poison: 0,
         shield_wall: 0, speed_boost: 0, invisibility: 0, earthquake: 0,
         blizzard: 0, laser: 0, mirror: 0, tornado: 0, gravity: 0,
@@ -17882,65 +18156,65 @@
       if (currentCoins >= bundle.cost) {
         console.log('✅ Bundle purchase successful!');
         
-        // Deduct coins
-        if (gameState.currentPlayer === 'white') {
-          gameState.whiteCoins -= bundle.cost;
+        // Use safe deduction
+        if (deductCoins(bundle.cost, `bundle purchase: ${bundleId}`)) {
+          // Initialize unlocked bundles array if needed
+          if (!gameState.unlockedBundles) {
+            gameState.unlockedBundles = [];
+          }
+          
+          // Add to unlocked bundles
+          if (!gameState.unlockedBundles.includes(bundleId)) {
+            gameState.unlockedBundles.push(bundleId);
+          }
+          
+          // Unlock all items in the bundle
+          if (bundle.theme && !gameState.unlockedThemes.includes(bundle.theme)) {
+            gameState.unlockedThemes.push(bundle.theme);
+          }
+          
+          if (bundle.whiteSkin && !gameState.whiteUnlockedSkins.includes(bundle.whiteSkin)) {
+            gameState.whiteUnlockedSkins.push(bundle.whiteSkin);
+          }
+          
+          if (bundle.blackSkin && !gameState.blackUnlockedSkins.includes(bundle.blackSkin)) {
+            gameState.blackUnlockedSkins.push(bundle.blackSkin);
+          }
+          
+          if (bundle.effect && effects[bundle.effect] && !effects[bundle.effect].purchased) {
+            effects[bundle.effect].purchased = true;
+          }
+          
+          if (bundle.soundPack && !gameState.unlockedSoundPacks.includes(bundle.soundPack)) {
+            gameState.unlockedSoundPacks.push(bundle.soundPack);
+          }
+          
+          // Auto-equip the bundle
+          equipBundle(bundleId);
+          
+          console.log('🎁 New coins balance:', getCurrentCoins());
+          console.log('🎁 Updated unlocked bundles:', gameState.unlockedBundles);
+          
+          // Update UI
+          document.getElementById('coin-count').textContent = getCurrentCoins();
+          document.getElementById('shop-coin-count').textContent = getCurrentCoins();
+          renderShopItems();
+          
+          // Save progress locally
+          savePlayerProgress();
+          
+          if (gameState.mode === 'online') {
+            updateGameStateOnServer();
+          }
+          
+          // Show success message with celebration
+          createConfetti(document.body);
+          alert(`🎉 Successfully purchased ${bundle.name}! 🎁\n\nAll items have been unlocked and equipped!`);
         } else {
-          gameState.blackCoins -= bundle.cost;
+          console.log('❌ Bundle purchase failed - not enough coins');
+          playErrorSound();
+          alert(`Not enough coins! Need ${bundle.cost} 🪙, you have ${currentCoins} 🪙`);
         }
-        
-        // Initialize unlocked bundles array if needed
-        if (!gameState.unlockedBundles) {
-          gameState.unlockedBundles = [];
-        }
-        
-        // Add to unlocked bundles
-        if (!gameState.unlockedBundles.includes(bundleId)) {
-          gameState.unlockedBundles.push(bundleId);
-        }
-        
-        // Unlock all items in the bundle
-        if (bundle.theme && !gameState.unlockedThemes.includes(bundle.theme)) {
-          gameState.unlockedThemes.push(bundle.theme);
-        }
-        
-        if (bundle.whiteSkin && !gameState.whiteUnlockedSkins.includes(bundle.whiteSkin)) {
-          gameState.whiteUnlockedSkins.push(bundle.whiteSkin);
-        }
-        
-        if (bundle.blackSkin && !gameState.blackUnlockedSkins.includes(bundle.blackSkin)) {
-          gameState.blackUnlockedSkins.push(bundle.blackSkin);
-        }
-        
-        if (bundle.effect && effects[bundle.effect] && !effects[bundle.effect].purchased) {
-          effects[bundle.effect].purchased = true;
-        }
-        
-        if (bundle.soundPack && !gameState.unlockedSoundPacks.includes(bundle.soundPack)) {
-          gameState.unlockedSoundPacks.push(bundle.soundPack);
-        }
-        
-        // Auto-equip the bundle
-        equipBundle(bundleId);
-        
-        console.log('🎁 New coins balance:', getCurrentCoins());
-        console.log('🎁 Updated unlocked bundles:', gameState.unlockedBundles);
-        
-        // Update UI
-        document.getElementById('coin-count').textContent = getCurrentCoins();
-        document.getElementById('shop-coin-count').textContent = getCurrentCoins();
-        renderShopItems();
-        
-        // Save progress locally
-        savePlayerProgress();
-        
-        if (gameState.mode === 'online') {
-          updateGameStateOnServer();
-        }
-        
-        // Show success message with celebration
-        createConfetti(document.body);
-        alert(`🎉 Successfully purchased ${bundle.name}! 🎁\n\nAll items have been unlocked and equipped!`);
       } else {
         console.log('❌ Bundle purchase failed - not enough coins');
         playErrorSound();
@@ -18162,6 +18436,58 @@
       }
     }
     
+    // Create floating chess pieces animation for home screen
+    function createFloatingChessPieces() {
+      const container = document.getElementById('home-chess-particles');
+      if (!container) return;
+      
+      const pieces = ['♔', '♕', '♖', '♗', '♘', '♙', '♚', '♛', '♜', '♝', '♞', '♟'];
+      const colors = ['#ffffff', '#e0e7ff', '#c7d2fe', '#a5b4fc', '#818cf8'];
+      
+      // Create 15 floating pieces
+      for (let i = 0; i < 15; i++) {
+        const piece = document.createElement('div');
+        piece.textContent = pieces[Math.floor(Math.random() * pieces.length)];
+        piece.style.cssText = `
+          position: absolute;
+          font-size: ${Math.random() * 20 + 15}px;
+          color: ${colors[Math.floor(Math.random() * colors.length)]};
+          opacity: ${Math.random() * 0.3 + 0.1};
+          left: ${Math.random() * 100}%;
+          top: ${Math.random() * 100}%;
+          pointer-events: none;
+          animation: floatPiece ${Math.random() * 10 + 10}s linear infinite;
+          animation-delay: ${Math.random() * 5}s;
+        `;
+        container.appendChild(piece);
+      }
+      
+      // Add CSS animation if not already exists
+      if (!document.getElementById('floating-pieces-style')) {
+        const style = document.createElement('style');
+        style.id = 'floating-pieces-style';
+        style.textContent = `
+          @keyframes floatPiece {
+            0% {
+              transform: translateY(0px) rotate(0deg);
+              opacity: 0;
+            }
+            10% {
+              opacity: 0.3;
+            }
+            90% {
+              opacity: 0.3;
+            }
+            100% {
+              transform: translateY(-100vh) rotate(360deg);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+    
     // Add event listener for Update Server button
     document.addEventListener('DOMContentLoaded', function() {
       const updateServerBtn = document.getElementById('update-server-btn');
@@ -18173,6 +18499,36 @@
       const displayElement = document.getElementById('current-version-display');
       if (displayElement) {
         displayElement.textContent = CURRENT_VERSION;
+      }
+      
+      // Create floating chess pieces for home screen
+      createFloatingChessPieces();
+      
+      // Add powerups toggle event listeners for public lobby
+      const powerupsOnBtn = document.getElementById('create-powerups-on-btn');
+      const powerupsOffBtn = document.getElementById('create-powerups-off-btn');
+      
+      if (powerupsOnBtn && powerupsOffBtn) {
+        // Initialize states
+        powerupsOnBtn.dataset.state = 'active';
+        powerupsOffBtn.dataset.state = 'inactive';
+        powerupsOnBtn.style.background = '#10b981';
+        powerupsOffBtn.style.background = '#ef4444';
+        
+        // Add click handlers
+        powerupsOnBtn.addEventListener('click', function() {
+          powerupsOnBtn.dataset.state = 'active';
+          powerupsOffBtn.dataset.state = 'inactive';
+          powerupsOnBtn.style.background = '#10b981';
+          powerupsOffBtn.style.background = '#ef4444';
+        });
+        
+        powerupsOffBtn.addEventListener('click', function() {
+          powerupsOffBtn.dataset.state = 'active';
+          powerupsOnBtn.dataset.state = 'inactive';
+          powerupsOffBtn.style.background = '#10b981';
+          powerupsOnBtn.style.background = '#ef4444';
+        });
       }
     });
     
@@ -18195,6 +18551,6 @@
     setTimeout(() => {
       animateNotification(`Welcome to Fun Chess v${GAME_VERSION}! 🎮`, 'success');
     }, 1000);
-  </script>
+</script>
  </body>
 </html>
